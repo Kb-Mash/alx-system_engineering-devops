@@ -1,29 +1,21 @@
 #!/usr/bin/python3
-"""module of the function top_ten"""
+"""Contains top_ten function"""
 import requests
 
 
 def top_ten(subreddit):
-    """
-     Retrieve and print the titles of the top ten hot posts for a
-     given subreddit using the Reddit API.
+    """Print the titles of the 10 hottest posts on a given subreddit"""
 
-    Args:
-        subreddit (str): The name of the subreddit for which to
-        retrieve the top ten hot posts.
-    """
-    url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
-    headers = {
-        "User-Agent": "0x16-api_advanced:project:\
-v1.0.0 (by /u/firdaus_cartoon_jr)"
-    }
-    params = {
-        "limit": 10
-    }
-    response = requests.get(url, headers=headers, params=params,
-                            allow_redirects=False)
-    if response.status_code == 404:
-        print("None")
-        return
-    results = response.json().get("data")
-    [print(c.get("data").get("title")) for c in results.get("children")]
+    if subreddit is None:
+        return 0
+
+    url = "http://www.reddit.com/r/{}/hot.json".format(subreddit)
+    user_agent = {"User-Agent": "ALX project about advanced api"}
+
+    response = requests.get(url, params={"limit": 10}, headers=user_agent)
+
+    if response.status_code == 200:
+        for post in response.json().get('data', {}).get('children', []):
+            print(post.get('data').get('title'))
+    else:
+        print(None)
